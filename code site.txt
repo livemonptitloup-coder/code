@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devis Mariage - Loup Diogo Wedding Planner</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #f9d5e5, #e8c7d8); margin: 0; padding: 20px; color: #333; }
+        .header { text-align: center; background: #ff69b4; color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .section { background: white; margin: 15px 0; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        h2 { color: #ff1493; border-bottom: 2px solid #ffb6c1; padding-bottom: 10px; }
+        label { display: block; margin: 10px 0; font-weight: bold; }
+        input[type="checkbox"] { transform: scale(1.5); margin-right: 10px; }
+        input[type="number"] { width: 60px; padding: 5px; border: 1px solid #ffb6c1; border-radius: 5px; }
+        .prix { font-weight: bold; color: #ff1493; font-size: 1.1em; }
+        .total { background: #fff0f5; padding: 15px; border-radius: 10px; text-align: center; font-size: 1.5em; margin-top: 20px; }
+        button { background: #ff69b4; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 1em; margin: 10px; }
+        @media (max-width: 600px) { .section { padding: 15px; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💒 Devis Mariage Personnalisé 💒</h1>
+        <p>Loup Diogo Wedding Planner - Agence spécialisée en mariages thématiques</p>
+    </div>
+
+    <div class="section">
+        <h2>1. Prestation Thématique (Obligatoire)</h2>
+        <label><input type="radio" name="prestation" value="boheme" data-prix-loc="5000" data-prix-repas="90"> Bohème Chic (Seine-et-Marne) - Location 5000€ + 90€/p</label>
+        <label><input type="radio" name="prestation" value="prince" data-prix-loc="10000" data-prix-repas="160"> Prince & Princesse (Yvelines) - Location 10000€ + 160€/p</label>
+        <label><input type="radio" name="prestation" value="rock" data-prix-loc="3000" data-prix-repas="70"> Rock'n Roll (Reims) - Location 3000€ + 70€/p</label>
+        <label><input type="radio" name="prestation" value="disco" data-prix-loc="3000" data-prix-repas="100"> Danse & Disco (Auxerre) - Location 3000€ + 100€/p</label>
+        <label><input type="radio" name="prestation" value="mets" data-prix-loc="7000" data-prix-repas="200"> Mets & Vins (Paris) - Location 7000€ + 200€/p</label>
+        <label><input type="radio" name="prestation" value="colors" data-prix-loc="5000" data-prix-repas="100"> Wedding Colors (Essonne) - Location 5000€ + 100€/p</label>
+        <label>Nombre de personnes: <input type="number" id="nbPersonnes" value="50" min="1" max="500"></label>
+        <div id="totalPrestation" class="prix">Total Prestation: 0€</div>
+    </div>
+
+    <div class="section">
+        <h2>2. Options Culinaires (10-20€/p)</h2>
+        <label><input type="checkbox" class="option" data-prix="10"> Ateliers Foie Gras (10€/p)</label>
+        <label><input type="checkbox" class="option" data-prix="7"> Cibo Italiano (7€/p)</label>
+        <label><input type="checkbox" class="option" data-prix="5"> Tapas sur Mesure (5€/p)</label>
+        <label><input type="checkbox" class="option" data-prix="5"> Wok & Légumes (5€/p)</label>
+        <label><input type="checkbox" class="option" data-prix="6"> Tireuse Bière (6€/p)</label>
+        <label><input type="checkbox" class="option" data-prix="6"> Flamenkuch (6€/p)</label>
+        <div id="totalOptions" class="prix">Total Options: 0€</div>
+    </div>
+
+    <div class="section">
+        <h2>3. Animations (Forfait fixe)</h2>
+        <label><input type="checkbox" class="animation" data-prix="1000"> Groupe Live (1000€)</label>
+        <label><input type="checkbox" class="animation" data-prix="900"> DJ (900€)</label>
+        <label><input type="checkbox" class="animation" data-prix="500"> Magicien (500€)</label>
+        <label><input type="checkbox" class="animation" data-prix="400"> Structures Gonflables (400€)</label>
+        <label><input type="checkbox" class="animation" data-prix="300"> Photobox (300€)</label>
+        <label><input type="checkbox" class="animation" data-prix="300"> Babysitter (300€)</label>
+        <div id="totalAnimations" class="prix">Total Animations: 0€</div>
+    </div>
+
+    <div class="section">
+        <h2>4. Ventes Complémentaires (Forfait fixe)</h2>
+        <label><input type="checkbox" class="complement" data-prix="1000"> Photographe (1000€)</label>
+        <label><input type="checkbox" class="complement" data-prix="800"> Vidéo (800€)</label>
+        <label><input type="checkbox" class="complement" data-prix="500"> Planner sur Place (500€)</label>
+        <label><input type="checkbox" class="complement" data-prix="300"> Annulation J-15 (300€)</label>
+        <div id="totalComplements" class="prix">Total Compléments: 0€</div>
+    </div>
+
+    <div class="total" id="totalGlobal">TOTAL DEVIS: 0€</div>
+    <div style="text-align: center;">
+        <button onclick="calculer()">🔄 Recalculer</button>
+        <button onclick="appliquerRemise()">💰 Appliquer 5% Remise (≥2 options)</button>
+        <button onclick="imprimer()">🖨️ Imprimer PDF</button>
+    </div>
+
+    <script>
+        function calculer() {
+            let totalPre = 0;
+            const prestation = document.querySelector('input[name="prestation"]:checked');
+            const nbP = parseInt(document.getElementById('nbPersonnes').value) || 0;
+            if (prestation) {
+                totalPre = parseFloat(prestation.dataset.prixLoc) + (nbP * parseFloat(prestation.dataset.prixRepas));
+            }
+            document.getElementById('totalPrestation').textContent = `Total Prestation: ${totalPre.toFixed(2)}€`;
+
+            const options = Array.from(document.querySelectorAll('.option:checked')).reduce((sum, el) => sum + (parseFloat(el.dataset.prix) * nbP), 0);
+            document.getElementById('totalOptions').textContent = `Total Options: ${options.toFixed(2)}€`;
+
+            const animations = Array.from(document.querySelectorAll('.animation:checked')).reduce((sum, el) => sum + parseFloat(el.dataset.prix), 0);
+            document.getElementById('totalAnimations').textContent = `Total Animations: ${animations.toFixed(2)}€`;
+
+            const complements = Array.from(document.querySelectorAll('.complement:checked')).reduce((sum, el) => sum + parseFloat(el.dataset.prix), 0);
+            document.getElementById('totalComplements').textContent = `Total Compléments: ${complements.toFixed(2)}€`;
+
+            const total = totalPre + options + animations + complements;
+            document.getElementById('totalGlobal').textContent = `TOTAL DEVIS: ${total.toFixed(2)}€`;
+        }
+
+        function appliquerRemise() {
+            const nbOptions = document.querySelectorAll('.option:checked, .animation:checked, .complement:checked').length;
+            if (nbOptions >= 2) {
+                let total = parseFloat(document.getElementById('totalGlobal').textContent.replace(/[^\d.,]/g, '').replace(',', '.'));
+                const remise = total * 0.05;
+                document.getElementById('totalGlobal').textContent = `TOTAL DEVIS (5% remise): ${(total - remise).toFixed(2)}€`;
+                alert('Remise 5% appliquée ! (≥2 options)');
+            } else {
+                alert('Ajoutez au moins 2 options pour la remise.');
+            }
+        }
+
+        function imprimer() {
+            window.print();
+        }
+
+        // Calcul auto au chargement et changements
+        document.addEventListener('change', calculer);
+        window.onload = calculer;
+    </script>
+</body>
+</html>
